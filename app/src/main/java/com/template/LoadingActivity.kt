@@ -3,13 +3,12 @@ package com.template
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -55,24 +54,28 @@ class LoadingActivity : AppCompatActivity() {
         if (matcher.find()) {
             FIREBASE_DOMAIN = matcher.group()
             val url ="$FIREBASE_DOMAIN/?packageid=$PACKAGE_ID&usserid=$USER_ID&getz=$TIMEZONE_VALUE&getr=utm_source=google-play&utm_medium=organic"
+            Log.d("TEST", url)
             getData(url)
         }
     }
 
     private fun getData(url: String) {
-        val request = Request.Builder().url(url).build()
-        val client = OkHttpClient()
-        client.newCall(request).enqueue(object : Callback {
+        val userAgent = (String.format(Locale.US, "(Android %s; %s; %s %s; %s)",
+            Build.VERSION.RELEASE, Build.MODEL, Build.BRAND, Build.DEVICE,
+            Locale.getDefault().language
+        ))
+        val request = Request.Builder().url(url).header("User-Agent", userAgent).build()
+        OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Log.d("TEST", e.message.toString())
             }
 
             override fun onResponse(call: Call, response: Response) {
                 when(response.code()) {
                     403 -> startActivity(Intent(this@LoadingActivity, MainActivity::class.java))
                     200 -> {
-                        preferences.edit().putString(SERVER_URL, response.body().toString()).apply()
-                        CustomTabsIntent.Builder().build().launchUrl(this@LoadingActivity, Uri.parse(response.body().toString()))
+                        Log.d("TEST", response.body()!!.string())
+//                        preferences.edit().putString(SERVER_URL, response.body()!!.string()).apply()
+//                        CustomTabsIntent.Builder().build().launchUrl(this@LoadingActivity, Uri.parse(response.body().toString()))
                     }
                 }
             }
