@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
@@ -54,7 +53,6 @@ class LoadingActivity : AppCompatActivity() {
         if (matcher.find()) {
             FIREBASE_DOMAIN = matcher.group()
             val url ="$FIREBASE_DOMAIN/?packageid=$PACKAGE_ID&usserid=$USER_ID&getz=$TIMEZONE_VALUE&getr=utm_source=google-play&utm_medium=organic"
-            Log.d("TEST", url)
             getData(url)
         }
     }
@@ -73,9 +71,11 @@ class LoadingActivity : AppCompatActivity() {
                 when(response.code()) {
                     403 -> startActivity(Intent(this@LoadingActivity, MainActivity::class.java))
                     200 -> {
-                        Log.d("TEST", response.body()!!.string())
-//                        preferences.edit().putString(SERVER_URL, response.body()!!.string()).apply()
-//                        CustomTabsIntent.Builder().build().launchUrl(this@LoadingActivity, Uri.parse(response.body().toString()))
+                        runOnUiThread {
+                            val responseUrl = response.body()!!.string()
+                            CustomTabsIntent.Builder().build().launchUrl(this@LoadingActivity, Uri.parse(responseUrl))
+                            preferences.edit().putString(SERVER_URL, responseUrl).apply()
+                        }
                     }
                 }
             }
