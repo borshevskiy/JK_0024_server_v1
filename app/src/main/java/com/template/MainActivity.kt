@@ -1,9 +1,13 @@
 package com.template
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -23,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var analytics: FirebaseAnalytics
     private lateinit var preferences: SharedPreferences
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -31,12 +36,14 @@ class MainActivity : AppCompatActivity() {
         preferences = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
         analytics = Firebase.analytics
 
-        if (preferences.contains(SERVER_URL)) {
-            CustomTabsIntent.Builder().build().launchUrl(this, Uri.parse(preferences.getString(SERVER_URL, "")))
-        } else if (!preferences.contains(IS_STARTED_UP)) {
-            val intent = Intent(this, LoadingActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
+        if ((getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetwork != null) {
+            if (preferences.contains(SERVER_URL)) {
+                CustomTabsIntent.Builder().build().launchUrl(this, Uri.parse(preferences.getString(SERVER_URL, "")))
+            } else if (!preferences.contains(IS_STARTED_UP)) {
+                val intent = Intent(this, LoadingActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+            }
         }
     }
 }
