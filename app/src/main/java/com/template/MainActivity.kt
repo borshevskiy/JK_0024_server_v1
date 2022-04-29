@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         if ((getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetwork != null) {
             if (preferences.contains(SERVER_URL)) {
                 CustomTabsIntent.Builder().build().launchUrl(this, Uri.parse(preferences.getString(SERVER_URL, "")))
+                finish()
             } else if (!preferences.contains(IS_STARTED_UP)) {
                 val intent = Intent(this, LoadingActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
