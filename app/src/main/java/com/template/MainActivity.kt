@@ -1,5 +1,6 @@
 package com.template
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -11,8 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.analytics.ktx.analytics
-import com.google.firebase.ktx.Firebase
 import com.template.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -24,9 +23,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var analytics: FirebaseAnalytics
     private lateinit var preferences: SharedPreferences
+    private lateinit var analytics: FirebaseAnalytics
 
+    @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,11 +34,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         preferences = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
-        analytics = Firebase.analytics
 
         if ((getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetwork != null) {
+            analytics = FirebaseAnalytics.getInstance(this)
             if (preferences.contains(SERVER_URL)) {
-                CustomTabsIntent.Builder().build().launchUrl(this, Uri.parse(preferences.getString(SERVER_URL, "")))
+                CustomTabsIntent.Builder().setToolbarColor(R.color.black).build().launchUrl(this, Uri.parse(preferences.getString(SERVER_URL, "")))
                 finish()
             } else if (!preferences.contains(IS_STARTED_UP)) {
                 val intent = Intent(this, LoadingActivity::class.java)

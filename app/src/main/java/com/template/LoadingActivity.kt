@@ -1,5 +1,6 @@
 package com.template
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -67,13 +68,14 @@ class LoadingActivity : AppCompatActivity() {
             override fun onFailure(call: Call, e: IOException) {
             }
 
+            @SuppressLint("ResourceAsColor")
             override fun onResponse(call: Call, response: Response) {
                 when(response.code()) {
                     403 -> startActivity(Intent(this@LoadingActivity, MainActivity::class.java))
                     200 -> {
                         runOnUiThread {
                             val responseUrl = response.body()!!.string()
-                            CustomTabsIntent.Builder().build().launchUrl(this@LoadingActivity, Uri.parse(responseUrl))
+                            CustomTabsIntent.Builder().setToolbarColor(R.color.black).build().launchUrl(this@LoadingActivity, Uri.parse(responseUrl))
                             preferences.edit().putString(SERVER_URL, responseUrl).apply()
                         }
                     }
