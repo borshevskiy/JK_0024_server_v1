@@ -15,6 +15,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".WebActivity"
+            android:screenOrientation="fullSensor"
             android:windowSoftInputMode="adjustPan"
             android:exported="false" />
 

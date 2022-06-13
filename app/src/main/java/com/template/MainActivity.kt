@@ -1,7 +1,6 @@
 package com.template
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
@@ -12,7 +11,6 @@ import com.template.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var preferences: SharedPreferences
     private lateinit var analytics: FirebaseAnalytics
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -20,9 +18,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        preferences = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
 
         if (internetAvailable(this)) {
+            val preferences = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
             analytics = FirebaseAnalytics.getInstance(this)
             if (preferences.contains(SERVER_URL)) {
                 startActivity(Intent(this, WebActivity::class.java))

@@ -1,12 +1,9 @@
 package com.template
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.browser.customtabs.CustomTabsIntent
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.template.databinding.ActivityLoadingBinding
@@ -37,16 +34,13 @@ class LoadingActivity : AppCompatActivity() {
             .build()).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) { }
 
-            @SuppressLint("ResourceAsColor")
             override fun onResponse(call: Call, response: Response) {
                 when (response.code()) {
                     CODE_403 -> startActivity(Intent(this@LoadingActivity, MainActivity::class.java))
                     CODE_200 -> {
                         runOnUiThread {
-                            val responseUrl = response.body()!!.string()
-                            CustomTabsIntent.Builder().setToolbarColor(R.color.black).build()
-                                .launchUrl(this@LoadingActivity, Uri.parse(responseUrl))
-                            preferences.edit().putString(SERVER_URL, responseUrl).apply()
+                            startActivity(Intent(this@LoadingActivity, WebActivity::class.java))
+                            preferences.edit().putString(SERVER_URL, response.body()!!.string()).apply()
                         }
                     }
                 }

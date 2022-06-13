@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.os.Build.*
 import android.os.Build.VERSION.RELEASE
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.getSystemService
 import com.google.firebase.BuildConfig
 import com.google.firebase.firestore.DocumentSnapshot
 import java.util.*
