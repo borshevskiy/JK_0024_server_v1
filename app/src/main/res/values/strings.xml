@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">JK_0024_server_v1</string>
+    <string name="app_name">JK_0024_server_v2</string>
+    <string name="url">%s/?packageid=%s&amp;usserid=%s&amp;getz=%s&amp;getr=utm_source=google-play&amp;utm_medium=organic</string>
+    <string name="user_agent">(Android %s; %s; %s %s; %s)</string>
 </resources>

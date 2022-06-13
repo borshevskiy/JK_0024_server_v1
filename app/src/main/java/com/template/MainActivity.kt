@@ -1,14 +1,9 @@
 package com.template
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -16,18 +11,10 @@ import com.template.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    companion object{
-        const val APP_SETTINGS = "App settings"
-        const val IS_STARTED_UP = "Is started up"
-        const val SERVER_URL = "server url"
-    }
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var preferences: SharedPreferences
     private lateinit var analytics: FirebaseAnalytics
 
-    @SuppressLint("ResourceAsColor")
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -35,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         preferences = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
 
-        if ((getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetwork != null) {
+        if (internetAvailable(this)) {
             analytics = FirebaseAnalytics.getInstance(this)
             if (preferences.contains(SERVER_URL)) {
                 CustomTabsIntent.Builder().setToolbarColor(R.color.black).build().launchUrl(this, Uri.parse(preferences.getString(SERVER_URL, "")))
