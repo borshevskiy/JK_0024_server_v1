@@ -11,7 +11,6 @@ import com.template.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var analytics: FirebaseAnalytics
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         if (internetAvailable(this)) {
             val preferences = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
-            analytics = FirebaseAnalytics.getInstance(this)
+            FirebaseAnalytics.getInstance(this)
             if (preferences.contains(SERVER_URL)) {
                 startActivity(Intent(this, WebActivity::class.java))
             } else if (!preferences.contains(IS_STARTED_UP)) {

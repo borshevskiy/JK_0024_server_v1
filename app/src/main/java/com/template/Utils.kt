@@ -12,15 +12,19 @@ import java.util.*
 const val APP_SETTINGS = "App settings"
 const val IS_STARTED_UP = "Is started up"
 const val SERVER_URL = "server url"
+const val COOKIES = "account cookies"
 const val CHANNEL_ID = "notificationChannel"
 const val CHANNEL_NAME = "channelName"
 const val DOCUMENT = "database/check"
 const val USER_AGENT = "User-Agent"
+const val RIGHT_BRACE = "]"
+const val LEFT_BRACE = "["
+const val EMPTY = ""
 const val CODE_403 = 403
 const val CODE_200 = 200
 
 
-fun String.removeBraces() = this.replace("[", "").replace("]", "")
+fun String.removeBraces() = this.replace(LEFT_BRACE, EMPTY).replace(RIGHT_BRACE, EMPTY)
 
 @RequiresApi(VERSION_CODES.M)
 fun internetAvailable(context: Context) = (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetwork != null
