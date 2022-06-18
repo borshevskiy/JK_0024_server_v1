@@ -3,7 +3,6 @@ package com.template
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -15,6 +14,7 @@ class WebActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityWebBinding
     private lateinit var preferences: SharedPreferences
+    private lateinit var cookieManager: CookieManager
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,36 +22,33 @@ class WebActivity : AppCompatActivity() {
         setTheme(R.style.Theme_NoActionBar)
         binding = ActivityWebBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         preferences = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
+        cookieManager = CookieManager.getInstance()
+
+        if (preferences.contains(COOKIES)) {
+            cookieManager.removeAllCookies(null)
+            preferences.getString(COOKIES, EMPTY)!!.split(DIVIDER).forEach {
+                cookieManager.setCookie(preferences.getString(URL, EMPTY), it)
+            }
+        }
+
 
         with(binding.webView) {
-            val cookieManager = CookieManager.getInstance()
             settings.domStorageEnabled = true
             settings.javaScriptEnabled = true
-            settings.databaseEnabled = true
 
             if (savedInstanceState != null) restoreState(savedInstanceState)
-            else loadUrl(getSharedPreferences(APP_SETTINGS, MODE_PRIVATE).getString(SERVER_URL, EMPTY)!!)
+            else loadUrl(preferences.getString(SERVER_URL, EMPTY)!!)
 
             cookieManager.setAcceptThirdPartyCookies(this, true)
             webViewClient = object : WebViewClient() {
 
-                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                    if (cookieManager.getCookie(url).contains("PHPSESSID")) {
-                        val map = cookieManager.getCookie(url).split(",").associate {
-                            val (left, right) = it.split("=")
-                            left to right
-                        }
-                        Log.d("TEST123", map.toString())
-                    }
-                    view?.loadUrl(url!!, mapOf("PHPSESSID" to "uf6cfgfnpaq9k34b3iv8or88o6"))
-                    return false
-                }
-
                 override fun onPageFinished(view: WebView?, url: String?) {
-                    Log.d("TEST", url.toString())
-                    Log.d("TEST", cookieManager.getCookie(url))
+                    val cookies = cookieManager.getCookie(url)
+                    if(cookies.contains(USER_ID) && !cookies.contains(EMPTY_USER)) {
+                        preferences.edit().putString(COOKIES, cookies).apply()
+                        preferences.edit().putString(URL, url).apply()
+                    }
                     super.onPageFinished(view, url)
                 }
             }
