@@ -3,7 +3,6 @@ package com.template
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -24,8 +23,9 @@ class LoadingActivity : AppCompatActivity() {
         preferences = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE)
 
         Firebase.firestore.document(DOCUMENT).get().addOnSuccessListener {
+            val data = it.data
             preferences.edit().putBoolean(IS_STARTED_UP, true).apply()
-            if (!it.data.isNullOrEmpty()) getData(getUrl(this, it.data!![KEY].toString()))
+            if (!data.isNullOrEmpty() && data.containsKey(KEY) && data[KEY] != EMPTY) getData(getUrl(this, data[KEY].toString()))
             else startActivity(Intent(this, MainActivity::class.java))
         }.addOnFailureListener { startActivity(Intent(this, MainActivity::class.java)) }
     }
