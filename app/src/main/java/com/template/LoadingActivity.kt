@@ -3,6 +3,7 @@ package com.template
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -24,13 +25,14 @@ class LoadingActivity : AppCompatActivity() {
 
         Firebase.firestore.document(DOCUMENT).get().addOnSuccessListener {
             preferences.edit().putBoolean(IS_STARTED_UP, true).apply()
-            if (it != null) getData(getUrl(this, it))
+            if (!it.data.isNullOrEmpty()) getData(getUrl(this, it.data!![KEY].toString()))
             else startActivity(Intent(this, MainActivity::class.java))
         }.addOnFailureListener { startActivity(Intent(this, MainActivity::class.java)) }
     }
 
     private fun getData(url: String) {
-        OkHttpClient().newCall(Request.Builder().url(url).header(USER_AGENT, getUserAgent(this))
+        OkHttpClient().newCall(Request.Builder().url(url)
+            .header(USER_AGENT, getUserAgent(this))
             .build()).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) { }
 

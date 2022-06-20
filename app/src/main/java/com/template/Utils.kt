@@ -21,21 +21,18 @@ const val CHANNEL_ID = "notificationChannel"
 const val CHANNEL_NAME = "channelName"
 const val DOCUMENT = "database/check"
 const val USER_AGENT = "User-Agent"
-const val RIGHT_BRACE = "]"
-const val LEFT_BRACE = "["
+const val KEY = "link"
 const val EMPTY = ""
 const val CODE_403 = 403
 const val CODE_200 = 200
 
 
-fun String.removeBraces() = this.replace(LEFT_BRACE, EMPTY).replace(RIGHT_BRACE, EMPTY)
-
 @RequiresApi(VERSION_CODES.M)
 fun internetAvailable(context: Context) = (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetwork != null
 
-fun getUrl(context: Context, document: DocumentSnapshot) = String.format(
+fun getUrl(context: Context, link: String) = String.format(
     context.getString(R.string.url),
-    document.data?.values.toString().removeBraces(),
+    link,
     BuildConfig.APPLICATION_ID,
     UUID.randomUUID(),
     TimeZone.getDefault().id
