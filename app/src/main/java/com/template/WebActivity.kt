@@ -3,6 +3,7 @@ package com.template
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -28,7 +29,10 @@ class WebActivity : AppCompatActivity() {
         if (preferences.contains(COOKIES)) {
             cookieManager.removeAllCookies(null)
             preferences.getString(COOKIES, EMPTY)!!.split(DIVIDER).forEach {
-                cookieManager.setCookie(preferences.getString(URL, EMPTY), it)
+                cookieManager.setCookie(URL_1, it)
+                cookieManager.setCookie(URL_2, it)
+                cookieManager.setCookie(URL_3, it)
+                cookieManager.setCookie(URL_4, it)
             }
         }
 
@@ -44,10 +48,10 @@ class WebActivity : AppCompatActivity() {
             webViewClient = object : WebViewClient() {
 
                 override fun onPageFinished(view: WebView?, url: String?) {
+                    Log.d("TEST", url!!)
                     val cookies = cookieManager.getCookie(url)
                     if(cookies.contains(USER_ID) && !cookies.contains(EMPTY_USER)) {
                         preferences.edit().putString(COOKIES, cookies).apply()
-                        preferences.edit().putString(URL, url).apply()
                     }
                     super.onPageFinished(view, url)
                 }
@@ -56,8 +60,8 @@ class WebActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        binding.webView.saveState(outState)
         super.onSaveInstanceState(outState)
+        binding.webView.saveState(outState)
     }
 
     override fun onBackPressed() {

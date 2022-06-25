@@ -6,7 +6,6 @@ import android.os.Build.*
 import android.os.Build.VERSION.RELEASE
 import androidx.annotation.RequiresApi
 import com.google.firebase.BuildConfig
-import com.google.firebase.firestore.DocumentSnapshot
 import java.util.*
 
 const val APP_SETTINGS = "App settings"
@@ -14,7 +13,10 @@ const val IS_STARTED_UP = "Is started up"
 const val SERVER_URL = "server url"
 const val DIVIDER = ";"
 const val COOKIES = "account cookies"
-const val URL = "URL"
+const val URL_1 = "https://v24club.one/"
+const val URL_2 = "https://vc1yb-24.com/"
+const val URL_3 = "https://win24-cllub.com/"
+const val URL_4 = "https://vbet24.org/"
 const val USER_ID = "userId"
 const val EMPTY_USER = "userId=0"
 const val CHANNEL_ID = "notificationChannel"
